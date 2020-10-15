@@ -1,20 +1,11 @@
-define($INT_IP_1 10.0.1.2, $INT_IP_2 10.0.1.3)
-
-
 // we just forward traffic from the host
 FromDevice($INTROUTE1, SNIFFER false) -> Queue(8) -> Print() -> ToDevice($EXTROUTE);
-FromDevice($INTROUTE2, SNIFFER false) -> Queue(8) -> Print() -> ToDevice($EXTROUTE);
-
-
 
 // before giving traffic to the host we need to do some checks
 FromDevice($EXTROUTE, SNIFFER false) -> ether :: Classifier(12/0806, -);
 
-out :: Queue(8) -> EnsureEther -> int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2);
+out :: Queue(8) -> EnsureEther -> ToDevice($INTROUTE1);
 
-// Classify inter ip
-int_ip_classifier[0] -> ToDevice($INTROUTE1)
-int_ip_classifier[1] -> ToDevice($INTROUTE2)
 
 // ARP can go through directly
 ether[0] -> out;

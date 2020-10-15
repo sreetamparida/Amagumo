@@ -74,7 +74,7 @@ def GenerateTopology():
     CLI( net )
 
     info( '*** Stopping network' )
-    #ClickKernelSwitch.batchShutdown([s1])
+
     net.stop()
 
 
