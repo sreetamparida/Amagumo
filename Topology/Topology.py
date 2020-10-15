@@ -8,7 +8,8 @@ from Click.Click import ClickKernelSwitch, ClickUserSwitch
 def GenerateTopology():
 
     "Create an empty network and add nodes to it."
-
+    setLogLevel('info')
+    
     net = Mininet( controller=RemoteController, switch=ClickUserSwitch, link=TCLink )
     setLogLevel('debug')
 
