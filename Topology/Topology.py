@@ -9,7 +9,7 @@ def GenerateTopology():
 
     "Create an empty network and add nodes to it."
     setLogLevel('info')
-    
+
     net = Mininet( controller=RemoteController, switch=ClickUserSwitch, link=TCLink )
     setLogLevel('debug')
 
@@ -17,11 +17,14 @@ def GenerateTopology():
     net.addController( 'c0' )
 
     info( '*** Adding hosts\n' )
-    h1 = net.addHost('h1', mac="00:00:00:00:00:01", ip="10.0.1.2/24")
-    h2 = net.addHost('h2', mac="00:00:00:00:00:02", ip="10.0.1.3/24")
-    h3 = net.addHost('h3', mac="00:00:00:00:00:01", ip="172.0.1.2/24")
-    h4 = net.addHost('h4', mac="00:00:00:00:00:01", ip="192.0.1.2/24")
-
+    # h1 = net.addHost('h1', mac="00:00:00:00:00:01", ip="10.0.1.2/24")
+    # h2 = net.addHost('h2', mac="00:00:00:00:00:02", ip="10.0.1.3/24")
+    # h3 = net.addHost('h3', mac="00:00:00:00:00:01", ip="172.0.1.2/24")
+    # h4 = net.addHost('h4', mac="00:00:00:00:00:01", ip="192.0.1.2/24")
+    h1 = net.addHost('h1')
+    h2 = net.addHost('h2')
+    h3 = net.addHost('h3')
+    h4 = net.addHost('h4')
     info( '*** Adding Internal Routers\n' )
 
     r1 = net.addSwitch('r1',  config_file='Routers/r1.click', log_file='Routers/Logs/r1.log', parameters= dict(INTROUTE1='r1-eth1', INTROUTE2='r1-eth2', EXTROUTE='r1-eth3'))
@@ -48,12 +51,12 @@ def GenerateTopology():
 
     net.addLink(h1, r1,  1, 1)
     net.addLink(h2, r1,  1, 2)
-    net.addLink(h3, r2,  1, 2)
+    net.addLink(h3, r2,  1, 1)
     net.addLink(h4, r3,  1, 2)
  
     net.addLink(r1, b1,  3, 1)
     net.addLink(r2, b2,  2, 1)
-    net.addLink(r3, b3,  2, 2)
+    net.addLink(r3, b3,  1, 2)
     net.addLink(r4, b4,  1, 2)
     net.addLink(r4, b5,  2, 2)
     net.addLink(r4, b6,  3, 1)
