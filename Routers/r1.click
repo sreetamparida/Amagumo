@@ -20,8 +20,8 @@ from_int_route2 -> out;
 from_ext_route -> ether :: Classifier(12/0806, -);
 
 int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, -);
-default_route :: Queue(8) -> EnsureEther -> to_int_route1;
-
+default_route1 :: Queue(8) -> EnsureEther -> to_int_route1;
+default_route2 :: Queue(8) -> EnsureEther -> to_int_route2;
 // ARP can go through directly
 ether[0] -> int_ip_classifier;
 
@@ -38,6 +38,10 @@ ip[1] -> SetTCPChecksum -> int_ip_classifier;
 ip[2] -> int_ip_classifier;
 
 // Classify inter ip
-int_ip_classifier[0] -> default_route;
-int_ip_classifier[1] -> Queue(8) -> EnsureEther -> to_int_route2;
-int_ip_classifier[2] -> default_route;
+int_ip_classifier[0] -> Print("Through IP Classifier") -> default_route1;
+int_ip_classifier[1] -> Print("Through IP Classifier") -> default_route2;
+int_ip_classifier[2] -> respond_arp :: Classifier(12/0806 40/0001, 12/0806 40/0002, -);
+
+respond_arp[0] -> Print("Through ARP Responder") -> default_route1;
+respond_arp[1] -> Print("Through ARP Responder") -> default_route2;
+respond_arp[2] -> Print("Through ARP Responder Default") -> default_route1;

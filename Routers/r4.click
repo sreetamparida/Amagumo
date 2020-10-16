@@ -10,7 +10,7 @@ to_ext_route :: ToDevice($EXTROUTE);
 
 
 // we just forward traffic from the host
-out :: Queue(8) -> EnsureEther -> to_ext_route;
+out :: Queue(8) -> Print("Forwared to external router") -> to_ext_route;
 from_int_route1 -> out;
 from_int_route2 -> out;
 
@@ -19,10 +19,9 @@ from_int_route2 -> out;
 // before giving traffic to the host we need to do some checks
 from_ext_route -> ether :: Classifier(12/0806, -);
 
-int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, dst $INT_IP_3, -);
-out_domain1 :: Queue(8) -> EnsureEther -> to_int_route1;
-out_domain2 :: Queue(8) -> EnsureEther -> to_int_route2;
-
+int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, dst $INT_IP_3,  -);
+default_route1 :: Queue(8) -> EnsureEther -> to_int_route1;
+default_route2 :: Queue(8) -> EnsureEther -> to_int_route2;
 // ARP can go through directly
 ether[0] -> int_ip_classifier;
 
@@ -39,7 +38,11 @@ ip[1] -> SetTCPChecksum -> int_ip_classifier;
 ip[2] -> int_ip_classifier;
 
 // Classify inter ip
-int_ip_classifier[0] -> out_domain1;
-int_ip_classifier[1] -> out_domain1;
-int_ip_classifier[2] -> out_domain2;
-int_ip_classifier[3] -> out_domain1;
+int_ip_classifier[0] -> Print("Through IP Classifier") -> default_route1;
+int_ip_classifier[1] -> Print("Through IP Classifier") -> default_route1;
+int_ip_classifier[2] -> Print("Through IP Classifier") -> default_route2;
+int_ip_classifier[3] -> respond_arp :: Classifier(12/0806 40/0001, 12/0806 40/0003, -);
+
+respond_arp[0] -> Print("Through ARP Responder") -> default_route1;
+respond_arp[1] -> Print("Through ARP Responder") -> default_route2;
+respond_arp[2] -> Print("Through ARP Responder Default") -> default_route1;
