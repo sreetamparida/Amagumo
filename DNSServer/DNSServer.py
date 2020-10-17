@@ -1,6 +1,6 @@
 from scapy.all import DNS, DNSQR, DNSRR, IP, send, sniff, UDP
 
-IFACE = "r3-eth2"
+IFACE = "h4-eth1"
 DNS_SERVER_IP = "10.0.0.4"
 
 BPF_FILTER = 'udp port 53 and ip dst {DNS_SERVER_IP}'.format(DNS_SERVER_IP=DNS_SERVER_IP)
@@ -9,9 +9,10 @@ BPF_FILTER = 'udp port 53 and ip dst {DNS_SERVER_IP}'.format(DNS_SERVER_IP=DNS_S
 def sendResponse(originPacket):
     print("RESOLVING DNS REQUEST")
     responsePacket = IP()
-    responsePacket.src = originPacket.dst
-    responsePacket.dst = originPacket.src
-    responsePacket.options = originPacket.options
+    print(originPacket.dst)
+    responsePacket.src = originPacket[IP].dst
+    responsePacket.dst = originPacket[IP].src
+    responsePacket.options = originPacket[IP].options
     responsePacket = responsePacket/UDP(dport=originPacket[UDP].sport)
     responsePacket = responsePacket/DNS()
     responsePacket[DNS].qr = 1
