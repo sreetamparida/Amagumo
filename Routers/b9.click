@@ -2,10 +2,17 @@
 FromDevice($INTROUTE1, SNIFFER false) -> Queue(8) -> Print() -> ToDevice($EXTROUTE);
 
 // before giving traffic to the host we need to do some checks
-FromDevice($EXTROUTE, SNIFFER false) -> ether :: Classifier(12/0806, -);
+FromDevice($EXTROUTE, SNIFFER false) -> dns_classifier :: Classifier(34/910800, -);
+
+//Check PID
+dns_classifier[0] -> check_pid :: Classifier(40/72, -);
+dns_classifier[1] -> ether :: Classifier(12/0806, -);
 
 out :: Queue(8) -> EnsureEther -> ToDevice($INTROUTE1);
 
+//Remove PID from packet
+check_pid[0] -> StoreData(40, 0) -> out;
+check_pid[1] -> Discard;
 
 // ARP can go through directly
 ether[0] -> out;

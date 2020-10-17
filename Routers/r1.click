@@ -17,27 +17,10 @@ from_int_route2 -> out;
 
 
 // before giving traffic to the host we need to do some checks
-from_ext_route -> ether :: Classifier(12/0806, -);
-
-int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, -);
+from_ext_route -> int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, -);
 default_route1 :: Queue(8) -> EnsureEther -> to_int_route1;
 default_route2 :: Queue(8) -> EnsureEther -> to_int_route2;
-// ARP can go through directly
-ether[0] -> int_ip_classifier;
 
-// IP needs some fixes
-ether[1] -> Strip(14) -> CheckIPHeader -> ip :: IPClassifier(ip proto udp, ip proto tcp, -);
-
-// udp checksum fix
-ip[0] -> SetUDPChecksum -> int_ip_classifier;
-
-// tcp checksum fix
-ip[1] -> SetTCPChecksum -> int_ip_classifier;
-
-// others
-ip[2] -> int_ip_classifier;
-
-// Classify inter ip
 int_ip_classifier[0] -> Print("Through IP Classifier") -> default_route1;
 int_ip_classifier[1] -> Print("Through IP Classifier") -> default_route2;
 int_ip_classifier[2] -> respond_arp :: Classifier(12/0806 40/0001, 12/0806 40/0002, -);
