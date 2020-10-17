@@ -11,9 +11,10 @@ def sendResponse(originPacket):
     responsePacket = IP()
     responsePacket.src = originPacket.dst
     responsePacket.dst = originPacket.src
+    responsePacket.options = originPacket.options
     responsePacket = responsePacket/UDP(dport=originPacket[UDP].sport)
     responsePacket = responsePacket/DNS()
-    responsePacket[DNS].rd = 1
+    responsePacket[DNS].qr = 1
     responsePacket[DNS].id = originPacket[DNS].id
     responsePacket[DNS].aa = 0
     responsePacket[DNS].tc = 0
