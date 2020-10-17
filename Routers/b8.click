@@ -1,5 +1,10 @@
 // we just forward traffic from the host
-FromDevice($INTROUTE1, SNIFFER false) -> Queue(8) -> Print() -> ToDevice($EXTROUTE);
+FromDevice($INTROUTE1, SNIFFER false) -> dns_classifier :: Classifier(34/910800, -);
+go_forward :: Queue(8) -> Print() -> ToDevice($EXTROUTE);
+
+// Separate DNS packets from normal packets
+dns_classifier[0] -> StoreData(40, 'r') -> go_forward;
+dns_classifier[1] -> go_forward;
 
 // before giving traffic to the host we need to do some checks
 FromDevice($EXTROUTE, SNIFFER false) -> ether :: Classifier(12/0806, -);
