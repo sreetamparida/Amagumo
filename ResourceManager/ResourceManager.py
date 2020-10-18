@@ -31,6 +31,7 @@ class ResourceManager:
         os.system(command)
         with open('PID.txt','r') as f:
             processID = f.readline()
+        processID = processID.replace('\n','')
         os.system('rm -f PID.txt')
         return processID
     
