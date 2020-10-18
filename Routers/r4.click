@@ -27,15 +27,18 @@ ether[0] -> default_route1;
 
 ether[1] -> default_route2;
 
-ether[2] -> int_ip_classifier;
+ether[2] -> respond_arp :: Classifier(12/0806 40/0001, 12/0806 40/0002, 12/0806 40/0003, -);
+
+respond_arp[0] -> Print("Through ARP Responder") -> default_route1;
+respond_arp[1] -> Print("Through ARP Responder") -> default_route1;
+respond_arp[2] -> Print("Through ARP Responder") -> default_route2;
+respond_arp[3] -> Print("IP Packet") -> Strip(14) -> CheckIPHeader -> int_ip_classifier;
 
 
 // Classify inter ip
-int_ip_classifier[0] -> Print("Through IP Classifier") -> default_route1;
-int_ip_classifier[1] -> Print("Through IP Classifier") -> default_route1;
-int_ip_classifier[2] -> Print("Through IP Classifier") -> default_route2;
-int_ip_classifier[3] -> respond_arp :: Classifier(12/0806 40/0001, 12/0806 40/0003, -);
+int_ip_classifier[0] -> Print("Through IP Classifier 1") -> default_route1;
+int_ip_classifier[1] -> Print("Through IP Classifier 2") -> default_route1;
+int_ip_classifier[2] -> Print("Through IP Classifier 3") -> default_route2;
+int_ip_classifier[3] -> Print("Through Default") -> default_route2;
 
-respond_arp[0] -> Print("Through ARP Responder") -> default_route1;
-respond_arp[1] -> Print("Through ARP Responder") -> default_route2;
-respond_arp[2] -> Print("Through ARP Responder Default") -> default_route1;
+

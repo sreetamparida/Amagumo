@@ -17,14 +17,18 @@ from_int_route2 -> out;
 
 
 // before giving traffic to the host we need to do some checks
-from_ext_route -> int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, -);
+from_ext_route -> check_proto :: Classifier(12/0806 40/0001, 12/0806 40/0002, 34/910800 32/0001, 34/910800 32/0002, -);
+
 default_route1 :: Queue(8) -> EnsureEther -> to_int_route1;
 default_route2 :: Queue(8) -> EnsureEther -> to_int_route2;
 
-int_ip_classifier[0] -> Print("Through IP Classifier") -> default_route1;
-int_ip_classifier[1] -> Print("Through IP Classifier") -> default_route2;
-int_ip_classifier[2] -> respond_arp :: Classifier(12/0806 40/0001, 12/0806 40/0002, -);
+check_proto[0] -> Print("Through ARP Responder") -> default_route1;
+check_proto[1] -> Print("Through ARP Responder") -> default_route2;
+check_proto[2] -> Print("Through Protocol Responder") -> default_route1;
+check_proto[3] -> Print("Through Protocol Responder") -> default_route2;
+check_proto[4] -> Print("IP Packet") -> Strip(14) -> CheckIPHeader -> int_ip_classifier :: IPClassifier(dst $INT_IP_1, dst $INT_IP_2, -);
 
-respond_arp[0] -> Print("Through ARP Responder") -> default_route1;
-respond_arp[1] -> Print("Through ARP Responder") -> default_route2;
-respond_arp[2] -> Print("Through ARP Responder Default") -> default_route1;
+
+int_ip_classifier[0] -> Print("Through IP Classifier 1") -> default_route1;
+int_ip_classifier[1] -> Print("Through IP Classifier 2") -> default_route2;
+int_ip_classifier[2] -> Print("Through Default") -> default_route1;
