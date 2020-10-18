@@ -4,6 +4,7 @@ from mininet.link import TCLink
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 from Click.Click import ClickKernelSwitch, ClickUserSwitch
+from ResourceManager.NetworkManager import NetworkManager
 
 def GenerateTopology():
 
@@ -17,10 +18,7 @@ def GenerateTopology():
     net.addController( 'c0' )
 
     info( '*** Adding hosts\n' )
-    # h1 = net.addHost('h1', mac="00:00:00:00:00:01", ip="10.0.1.2/24")
-    # h2 = net.addHost('h2', mac="00:00:00:00:00:02", ip="10.0.1.3/24")
-    # h3 = net.addHost('h3', mac="00:00:00:00:00:01", ip="172.0.1.2/24")
-    # h4 = net.addHost('h4', mac="00:00:00:00:00:01", ip="192.0.1.2/24")
+
     h1 = net.addHost('h1')
     h2 = net.addHost('h2')
     h3 = net.addHost('h3')
@@ -74,12 +72,16 @@ def GenerateTopology():
     info( '*** Starting network\n')
     net.start()
 
+    # networkManager = NetworkManager()
+
+    info( '*** Starting Network Manager\n')
+    # networkManager.start()
+
     info( '*** Running CLI\n' )
     CLI( net )
 
+    info( '*** Stopping Network Manager\n')
+    # networkManager.stop()
+
     info( '*** Stopping network' )
-
     net.stop()
-
-
-    

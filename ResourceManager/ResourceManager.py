@@ -11,16 +11,16 @@ NODES = [[],
 
 
 router_commands = {
-    '[b]1.click': 'click EXTROUTE=b1-eth2 INTROUTE1=b1-eth1 Routers/b1.click > "Routers/Logs/b1.log" 2>&1 &',
-    '[b]2.click': 'click EXTROUTE=b2-eth2 INTROUTE1=b2-eth1 Routers/b2.click > "Routers/Logs/b2.log" 2>&1 &',
-    '[b]3.click': 'click EXTROUTE=b3-eth2 INTROUTE1=b3-eth1 Routers/b3.click > "Routers/Logs/b3.log" 2>&1 &',
-    '[b]4.click': 'click EXTROUTE=b4-eth2 INTROUTE1=b4-eth1 Routers/b4.click > "Routers/Logs/b4.log" 2>&1 &',
-    '[b]5.click': 'click EXTROUTE=b5-eth2 INTROUTE1=b5-eth1 Routers/b5.click > "Routers/Logs/b5.log" 2>&1 &',
-    '[b]6.click': 'click EXTROUTE=b6-eth2 INTROUTE1=b6-eth1 Routers/b6.click > "Routers/Logs/b6.log" 2>&1 &',
-    '[b]7.click': 'click EXTROUTE=b7-eth2 INTROUTE1=b7-eth1 Routers/b7.click > "Routers/Logs/b7.log" 2>&1 &',
-    '[b]8.click': 'click EXTROUTE=b8-eth2 INTROUTE1=b8-eth1 Routers/b8.click > "Routers/Logs/b8.log" 2>&1 &',
-    '[b]9.click': 'click EXTROUTE=b9-eth2 INTROUTE1=b9-eth1 Routers/b9.click > "Routers/Logs/b9.log" 2>&1 &',
-    '[b]10.click':'click EXTROUTE=b10-eth2 INTROUTE1=b10-eth1 Routers/b10.click > "Routers/Logs/b10.log" 2>&1 &'
+    "'[b]1.click'": 'click EXTROUTE=b1-eth2 INTROUTE1=b1-eth1 Routers/b1.click > "Routers/Logs/b1.log" 2>&1 &',
+    "'[b]2.click'": 'click EXTROUTE=b2-eth2 INTROUTE1=b2-eth1 Routers/b2.click > "Routers/Logs/b2.log" 2>&1 &',
+    "'[b]3.click'": 'click EXTROUTE=b3-eth2 INTROUTE1=b3-eth1 Routers/b3.click > "Routers/Logs/b3.log" 2>&1 &',
+    "'[b]4.click'": 'click EXTROUTE=b4-eth2 INTROUTE1=b4-eth1 Routers/b4.click > "Routers/Logs/b4.log" 2>&1 &',
+    "'[b]5.click'": 'click EXTROUTE=b5-eth2 INTROUTE1=b5-eth1 Routers/b5.click > "Routers/Logs/b5.log" 2>&1 &',
+    "'[b]6.click'": 'click EXTROUTE=b6-eth2 INTROUTE1=b6-eth1 Routers/b6.click > "Routers/Logs/b6.log" 2>&1 &',
+    "'[b]7.click'": 'click EXTROUTE=b7-eth2 INTROUTE1=b7-eth1 Routers/b7.click > "Routers/Logs/b7.log" 2>&1 &',
+    "'[b]8.click'": 'click EXTROUTE=b8-eth2 INTROUTE1=b8-eth1 Routers/b8.click > "Routers/Logs/b8.log" 2>&1 &',
+    "'[b]9.click'": 'click EXTROUTE=b9-eth2 INTROUTE1=b9-eth1 Routers/b9.click > "Routers/Logs/b9.log" 2>&1 &',
+    "'[b]10.click'":'click EXTROUTE=b10-eth2 INTROUTE1=b10-eth1 Routers/b10.click > "Routers/Logs/b10.log" 2>&1 &'
 }
 
 
@@ -37,8 +37,12 @@ class ResourceManager:
     
     def killProcess(self, processName):
         processID = self.getProcessID(processName)
-        command = 'kill '+ processID
-        os.system(command)
+        if len(processID)>1:
+            command = 'kill '+ processID
+            print(command)
+            os.system(command)
+        else:
+            print('Process not executing')
 
     def updateRouter(self, processName):
         self.killProcess(processName)
@@ -57,9 +61,7 @@ class ResourceManager:
 
     def updatePrivatePID(self, fileName, value):
         configuration = []
-        value = binascii.b2a_hex(bytes(value,'utf-8'))
-        value = str(value).strip("'").split("'")[1]
-        
+        value = str(binascii.b2a_hex(bytes(str(value))))
         with open(fileName, 'r') as f:
             configuration = f.readlines()
         line = configuration[7]
