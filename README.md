@@ -3,7 +3,8 @@
 This is an implementation of **DPID** based routing network. This has been implemented using these following dependencies:
 1. [Click Modular Router](https://github.com/kohler/click)
 2. [Mininet](http://mininet.org)
-3. [Python](https://www.python.org)
+3. [Python 2.7 or higher](https://www.python.org)
+4. [Scapy](https://scapy.readthedocs.io/en/latest/)
 
 ## Methodology
 
@@ -25,7 +26,8 @@ Mininet is a network emulator, or perhaps more accurately a network orchestratio
 3. `Click` stores the click router integration module with mininet.
 4. `Topology` initiates the entire network topology and indivisual hosts and routers.
 5. `ResourceManager` **generates** PID and **negotiates** with other routers.
-6. `Routers` store the router configuration files used in this network.
+6. `NetworkManager` **updates** PID and maintains connectivity in the network. Replaces failed routers with a working one.
+7. `Routers` store the router configuration files used in this network.
 
 ## Topology
 
@@ -57,12 +59,16 @@ sudo apt-get install mininet
 cd {path-to-Amagumo-directory}
 sudo python initiate.py
 ```
-7. In the mininet CLI run the following commands.
+7. If you want to start Network Manager then run the following command.
+```
+sudo python startNetworkManager.py
+```
+8. In the mininet CLI run the following commands.
 ```
 h1 ping h4
 ```
-8. Incase of failure run the command in terminal and check if all routers are running or not.
+9. Incase of failure execute the `refreshNetwork.py` inside Tools directory.
 ```
-ps aux | grep click
+sudo python Tools/refreshNetwork.py
 ```
-9. If all the routers are not running the there is a system resource issue preventing the routers from executing, solve that to execute again.
+10. If still the problem persists then there is a system resource issue preventing the routers from executing, solve that and execute again.
