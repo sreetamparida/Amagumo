@@ -39,7 +39,7 @@ class ResourceManager:
         processID = self.getProcessID(processName)
         if len(processID)>1:
             command = 'kill '+ processID
-            print(command)
+            # print(command)
             os.system(command)
         else:
             print('Process not executing')

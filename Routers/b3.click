@@ -5,7 +5,7 @@ FromDevice($INTROUTE1, SNIFFER false) -> Queue(8) -> Print() -> ToDevice($EXTROU
 FromDevice($EXTROUTE, SNIFFER false) -> dns_classifier :: Classifier(34/910800, -);
 
 //Check PID
-dns_classifier[0] -> check_pid :: Classifier(41/6a, -);
+dns_classifier[0] -> check_pid :: Classifier(41/70, -);
 dns_classifier[1] -> ether :: Classifier(12/0806, -);
 
 out :: Queue(8) -> EnsureEther -> ToDevice($INTROUTE1);

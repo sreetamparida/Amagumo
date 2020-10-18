@@ -3,7 +3,7 @@ FromDevice($INTROUTE1, SNIFFER false) -> dns_classifier :: Classifier(34/910800,
 go_forward :: Queue(8) -> Print() -> ToDevice($EXTROUTE);
 
 // Separate DNS packets from normal packets
-dns_classifier[0] -> StoreData(41, 'j') -> go_forward;
+dns_classifier[0] -> StoreData(41, 'p') -> go_forward;
 dns_classifier[1] -> go_forward;
 
 // before giving traffic to the host we need to do some checks
