@@ -11,7 +11,7 @@ class NetworkManager:
     def __init__(self):
         self.manager = None
         self.isRunning = False
-        self.interval = 60
+        self.interval = 30
         self.count = 0
 
     def _run(self):
