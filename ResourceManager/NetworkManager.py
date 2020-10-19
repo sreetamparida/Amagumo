@@ -38,7 +38,7 @@ class NetworkManager:
 
 
     def _manageNetwork(self):
-        if self.count < 5:
+        if self.count < 8:
             self.count+=1
             rm = ResourceManager()
             print('*** Refreshing Network')

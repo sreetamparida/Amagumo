@@ -35,8 +35,7 @@ class ResourceManager:
         os.system('rm -f PID.txt')
         return processID
     
-    def killProcess(self, processName):
-        processID = self.getProcessID(processName)
+    def killProcess(self, processID):
         if len(processID)>1:
             command = 'kill '+ processID
             # print(command)
@@ -45,8 +44,10 @@ class ResourceManager:
             print('Process not executing')
 
     def updateRouter(self, processName):
-        self.killProcess(processName)
+        processID = self.getProcessID(processName)
         os.system(router_commands[processName])
+        self.killProcess(processID)
+        
 
 
     def updatePublicPID(self, fileName, value):
