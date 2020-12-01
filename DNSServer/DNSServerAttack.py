@@ -40,4 +40,4 @@ def sendResponse(originPacket):
     return "SENT DNS RESPONSE"
 
 while True:
-    sniff(count=1, filter=BPF_FILTER, prn=sendResponse, iface=IFACE)
+    sniff(filter=BPF_FILTER, prn=sendResponse, iface=IFACE)

@@ -1,6 +1,6 @@
 import os
 import binascii
-
+import time
 
 NODES = [[],
          [],
@@ -73,14 +73,20 @@ class ResourceManager:
     def updatePID(self, RMID, values):
         RM_NODES = NODES[RMID-1]
         for node in RM_NODES:
+            start = time.time()
             value = values.pop(0)
             path = 'Routers/'
             node_1 = node[0].replace('[b]','b').strip("'")
             node_2 = node[1].replace('[b]','b').strip("'")
+            startUpdation = time.time()
             self.updatePublicPID( path + node_1, value)
             self.updatePrivatePID(path + node_2, value)
+            endUpdation = time.time() - startUpdation
+            print('*** PID updation time: ', endUpdation)
             self.updateRouter(node[0])
             self.updateRouter(node[1])
+            end = time.time() - start
+            print('*** PID sharing and updation time: ', end)
         
 
 
