@@ -23,13 +23,14 @@ def GenerateTopology():
     h2 = net.addHost('h2')
     h3 = net.addHost('h3')
     h4 = net.addHost('h4')
+    h5 = net.addHost('h5')
     info( '*** Adding Internal Routers\n' )
 
     r1 = net.addSwitch('r1',  config_file='Routers/r1.click', log_file='Routers/Logs/r1.log', parameters= dict(INTROUTE1='r1-eth1', INTROUTE2='r1-eth2', EXTROUTE='r1-eth3'))
     r2 = net.addSwitch('r2',  config_file='Routers/r2.click', log_file='Routers/Logs/r2.log', parameters= dict(INTROUTE1='r2-eth1', EXTROUTE='r2-eth2'))
     r3 = net.addSwitch('r3',  config_file='Routers/r3.click', log_file='Routers/Logs/r3.log', parameters= dict(INTROUTE1='r3-eth1', EXTROUTE='r3-eth2'))
     r4 = net.addSwitch('r4',  config_file='Routers/r4.click', log_file='Routers/Logs/r4.log', parameters= dict(INTROUTE1='r4-eth1', INTROUTE2='r4-eth2', EXTROUTE='r4-eth3'))
-    r5 = net.addSwitch('r5',  config_file='Routers/r5.click', log_file='Routers/Logs/r5.log', parameters= dict(INTROUTE1='r5-eth1', EXTROUTE='r5-eth2'))
+    r5 = net.addSwitch('r5',  config_file='Routers/r5.click', log_file='Routers/Logs/r5.log', parameters= dict(INTROUTE1='r5-eth1', INTROUTE2='r5-eth3', EXTROUTE='r5-eth2'))
     r6 = net.addSwitch('r6',  config_file='Routers/r6.click', log_file='Routers/Logs/r6.log', parameters= dict(INTROUTE1='r6-eth1', EXTROUTE='r6-eth2'))
 
     info( '*** Adding Border Routers\n' )
@@ -60,6 +61,7 @@ def GenerateTopology():
     net.addLink(r4, b6,  3, 1)
     net.addLink(r5, b7,  1, 2)
     net.addLink(r5, b8,  2, 1)
+    net.addLink(r5, h5,  3, 1)
     net.addLink(r6, b9,  1, 2)
     net.addLink(r6, b10, 2, 1)
 
