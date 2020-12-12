@@ -42,6 +42,7 @@ def sendResponse(originPacket):
     SENT = True
     send(responsePacket)
     return "SENT DNS RESPONSE"
+    
 
 if __name__ == "__main__":
     
