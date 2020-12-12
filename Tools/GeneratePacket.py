@@ -1,3 +1,6 @@
+# pylint: disable=no-name-in-module
+# pylint: disable=undefined-variable
+# pylint: disable=unused-wildcard-import
 from scapy.all import *
 
 def generatePacket():
