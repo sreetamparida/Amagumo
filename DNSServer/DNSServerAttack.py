@@ -1,5 +1,5 @@
 # pylint: disable=no-name-in-module
-from scapy.all import DNS, DNSQR, DNSRR, IP, send, sniff, UDP
+from scapy.all import DNS, DNSQR, DNSRR, IP, send, sniff, UDP, Raw
 
 IFACE = "h4-eth1"
 DNS_SERVER_IP = "10.0.0.4"
@@ -36,6 +36,8 @@ def sendResponse(originPacket):
     responsePacket[DNSRR].rdata = "10.0.0.4"
     responsePacket[DNSRR].ttl = 294
     responsePacket[DNSRR].rdlen = 4
+    size_data = '''Topic sentences are similar to mini thesis statements. Like a thesis statementTopic sentences are similar to mini Topic sentences are similar to mini thesis statements. Like a thesis statement'''
+    responsePacket = responsePacket/Raw(load = size_data)
     global RESPONSE_PACKET
     RESPONSE_PACKET = responsePacket
     global SENT

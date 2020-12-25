@@ -1,32 +1,34 @@
 // we just forward traffic from the host
-to_ext_route :: Queue(8) -> Print() -> ToDevice($EXTROUTE);
+from_int_route1 :: FromDevice($INTROUTE1, SNIFFER false);
+from_int_route2 :: FromDevice($INTROUTE2, SNIFFER false);
 
-FromDevice($INTROUTE1, SNIFFER false) -> to_ext_route;
-FromDevice($INTROUTE2, SNIFFER false) -> to_ext_route;
+to_int_route1 :: ToDevice($INTROUTE1)
+to_int_route2 :: ToDevice($INTROUTE2)
 
-// before giving traffic to the host we need to do some checks
-FromDevice($EXTROUTE, SNIFFER false) -> ether :: Classifier(34/910800, 12/0806, -);
+from_ext_route :: FromDevice($EXTROUTE, SNIFFER false);
+to_ext_route :: ToDevice($EXTROUTE);
 
-out :: Queue(8) -> EnsureEther -> ToDevice($INTROUTE1);
-expOut :: Queue(8) -> EnsureEther -> ToDevice($INTROUTE2);
-ether[0] -> out;
-// ARP can go through directly
-ether[1] -> classifyExp :: Classifier(12/0806 40/0005, -);
+int_out1 :: Queue(8) -> EnsureEther -> Print("Forwared to internal route 1") -> to_int_route1;
+int_out2 :: Queue(8) -> EnsureEther -> Print("Forwared to internal route 2") -> to_int_route2;
+ext_out :: Queue(8) -> EnsureEther -> Print("Forwared to external route") -> to_ext_route;
 
-classifyExp[0] -> expOut;
-classifyExp[1] -> out;
+checkARP :: Classifier(12/0806, -);
+classifyARP :: Classifier(12/0806 40/0001, 12/0806 40/0004, 12/0806 40/0005);
+classifyIP :: IPClassifier(dst 10.0.0.1, dst 10.0.0.4, dst 10.0.0.5);
 
-// IP needs some fixes
-ether[2] -> Strip(14) -> CheckIPHeader -> ip :: IPClassifier(dst 10.0.0.5, ip proto udp, ip proto tcp, -);
+checkARP[0] -> classifyARP;
+checkARP[1] -> Print("IP Packet") -> Strip(14) -> CheckIPHeader -> classifyIP;
 
-// set exp node
-ip[0] -> expOut;
+classifyARP[0] -> int_out1;
+classifyARP[1] -> ext_out;
+classifyARP[2] -> int_out2;
 
-// udp checksum fix
-ip[1] -> SetUDPChecksum -> out;
+classifyIP[0] -> int_out1;
+classifyIP[1] -> ext_out;
+classifyIP[2] -> int_out2;
 
-// tcp checksum fix
-ip[2] -> SetTCPChecksum -> out;
-
-// others
-ip[3] -> out;
+from_int_route1 -> checkARP;
+from_int_route2 -> checkARP;
+from_ext_route -> checkProto :: Classifier(34/910800, -);
+checkProto[0] -> int_out1;
+checkProto[1] -> checkARP;
